@@ -1,54 +1,49 @@
+````markdown
 # uup-converter (Nix package)
 
 This repository provides a **Nix package and flake** for **uup-converter**, a tool that converts Windows UUP (Unified Update Platform) downloads into installation media such as **ISO** or **WIM** images.
 
-This repo focuses on **packaging**. For detailed usage, supported flags, and licensing terms, always refer to the upstream project.
+This repository focuses on **packaging only**. For usage details, supported flags, and licensing, refer to the upstream project.
 
 ---
 
 ## Upstream
 
-* **Upstream project:** [https://git.uupdump.net/uup-dump/converter](https://git.uupdump.net/uup-dump/converter)
-* **This repository:** [https://github.com/Cairnstew/uup-converter-nix](https://github.com/Cairnstew/uup-converter-nix)
-* **License:** See the upstream repository for the authoritative license information
+- **Upstream project:** [https://git.uupdump.net/uup-dump/converter](https://git.uupdump.net/uup-dump/converter)  
+- **This repository:** [https://github.com/Cairnstew/uup-converter](https://github.com/Cairnstew/uup-converter)  
+- **License:** See upstream for license details  
 
 ---
 
 ## Requirements
 
-* Linux
-* Nix
-* A prepared UUP download directory (this tool does **not** download UUP files itself)
+- Linux
+- Nix
+- A prepared UUP download directory (this tool **does not** download UUP files)
 
-All runtime dependencies are provided via Nix.
+All runtime dependencies are provided by Nix.
 
 ---
 
 ## Usage with flakes (recommended)
 
-### Build
+### Build the package
 
 ```bash
-nix build github:Cairnstew/uup-converter-nix
-```
+nix build github:Cairnstew/uup-converter#uup-converter
+````
 
-Or explicitly:
-
-```bash
-nix build github:Cairnstew/uup-converter-nix#uup-converter
-```
-
-### Run
+### Run the tool
 
 ```bash
-nix run github:Cairnstew/uup-converter-nix -- --help
+nix run github:Cairnstew/uup-converter#uup-converter -- --help
 ```
 
-(The `--` separates Nix arguments from program arguments.)
+> The `--` separates Nix arguments from the program arguments.
 
 ---
 
-## Building locally (non-flake / legacy)
+## Local / non-flake build (legacy)
 
 From the repository root:
 
@@ -64,7 +59,7 @@ This creates a `./result` symlink. The binary will be available at:
 
 ---
 
-## Installing
+## Installation
 
 ### Per-user (legacy)
 
@@ -74,45 +69,47 @@ nix-env -f . -iA uup-converter
 
 ### Declarative NixOS
 
-Add the package to your configuration:
+Add to your system configuration:
 
 ```nix
-environment.systemPackages = [
-  pkgs.uup-converter
-];
+environment.systemPackages = [ pkgs.uup-converter ];
 ```
 
-(Or use `home-manager`’s `home.packages`.)
+Or use `home-manager`:
+
+```nix
+home.packages = [ pkgs.uup-converter ];
+```
 
 ---
 
 ## Basic usage
 
-Run the tool with `--help` to see the exact options supported by the packaged version:
+Run `--help` to see all available options:
 
 ```bash
 uup-converter --help
 ```
 
-Typical examples:
+Example usage:
 
 ```bash
 # Convert a UUP folder into an ISO
 uup-converter -i ./uup_download -o ./Windows.iso
 
-# Produce a WIM image (if supported by the upstream version)
+# Produce a WIM image
 uup-converter -i ./uup_download -w ./install.wim
 ```
 
-The input directory must already contain a valid UUP file layout produced by a UUP downloader.
+> The input directory must already contain a valid UUP file layout produced by a UUP downloader.
 
 ---
 
 ## Notes
 
-* Available flags and behavior depend on the upstream `uup-converter` revision packaged here.
-* Always validate generated ISOs or WIMs using a VM or your deployment tooling before production use.
-* This package wraps the upstream scripts and tools; it does not modify their behavior beyond providing dependencies.
+* Available flags depend on the upstream revision packaged here.
+* Always validate generated ISOs or WIMs in a VM or deployment tooling before production use.
+* This package **wraps** the upstream tool; it does not modify behavior beyond providing dependencies.
 
 ---
 
@@ -125,6 +122,17 @@ The input directory must already contain a valid UUP file layout produced by a U
 
 ## Tests
 
-No automated package tests are included. Validation is expected to be performed by running the tool and testing the generated artifacts.
+No automated tests are included. Validation is expected by running the tool and testing generated artifacts.
+
+```
+
+---
+
+✅ **Key improvements:**  
+
+1. Flake usage is **highlighted first**, legacy usage is secondary.  
+2. Markdown is more concise and easier to scan.  
+3. Repetitive info (like “input directory must contain UUP files”) is shorter.  
+4. Notes are clearer and actionable.  
 
 ---

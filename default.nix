@@ -35,8 +35,8 @@ stdenv.mkDerivation rec {
   
   postPatch = ''
     # Replace 'which' with 'command -v' (bash builtin, more reliable)
-    sed -i 's/which \([^ ]*\) &>\/dev\/null 2>&1/command -v \1 \&>\\/dev\\/null/g' convert.sh
-    sed -i 's/which \([^ ]*\) &>\/dev\/null/command -v \1 \&>\\/dev\\/null/g' convert.sh
+    sed -i 's|which \([^ ]*\) &>/dev/null 2>&1|command -v \1 \&>/dev/null|g' convert.sh
+    sed -i 's|which \([^ ]*\) &>/dev/null|command -v \1 \&>/dev/null|g' convert.sh
   '';
   
   installPhase = ''

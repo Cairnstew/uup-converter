@@ -1,43 +1,130 @@
-# uup-converter — Nix package README
+# uup-converter (Nix package)
 
-This Nix package builds the uup-converter tool that converts UUP (Unified Update Platform) downloads into Windows installation media (ISO/WIM) and related artifacts.
+This repository provides a **Nix package and flake** for **uup-converter**, a tool that converts Windows UUP (Unified Update Platform) downloads into installation media such as **ISO** or **WIM** images.
 
-Repository
-- Source: https://github.com/Cairnstew/uup-converter-nix
-- Upstream project and licensing: consult the upstream uup-converter repository for the authoritative README, usage details, and license.
+This repo focuses on **packaging**. For detailed usage, supported flags, and licensing terms, always refer to the upstream project.
 
-Building locally (non-flake)
-- From the repository root:
-    - nix-build -A uup-converter
-- The build produces a `./result` symlink. The installed binary is typically at `./result/bin/uup-converter`.
+---
 
-Building with flakes (if you use flakes)
-- nix build .#uup-converter
-- The build output is available in the Nix store and linked into `./result` when using the legacy behavior or into `./result` if you run `nix build --out-link result`.
+## Upstream
 
-Installing
-- Per-user (legacy):
-    - nix-env -f . -iA uup-converter
-- Declarative NixOS:
-    - Add `uup-converter` to `environment.systemPackages` (or `environment.userPackages` for home-manager).
+* **Upstream project:** [https://git.uupdump.net/uup-dump/converter](https://git.uupdump.net/uup-dump/converter)
+* **This repository:** [https://github.com/Cairnstew/uup-converter-nix](https://github.com/Cairnstew/uup-converter-nix)
+* **License:** See the upstream repository for the authoritative license information
 
-Basic usage
-- General form (check `--help` for exact flags supported by the packaged binary):
-    - uup-converter --input /path/to/uup_folder --output /path/to/output.iso
-- Examples:
-    - Convert a folder into an ISO:
-        - uup-converter -i ./uup_download -o ./Windows.iso
-    - Produce a WIM (if this build supports it):
-        - uup-converter -i ./uup_download -w ./install.wim
-- The tool expects a prepared UUP folder (files arranged by a UUP downloader). It generally does not perform downloads itself.
+---
 
-Notes and validation
-- Behavior, available flags, and supported targets depend on the upstream uup-converter release used by this package. Run `uup-converter --help` to view supported options.
-- Validate generated ISO/WIM images with your usual VM or deployment tooling before production use.
+## Requirements
 
-Maintainers and reporting bugs
-- Packaging maintenance: see this repository for the maintainers list or top-level README.
-- Report packaging issues in this repository's issue tracker. For tool-specific bugs, prefer the upstream project's issue tracker.
+* Linux
+* Nix
+* A prepared UUP download directory (this tool does **not** download UUP files itself)
 
-Tests
-- No package-specific tests are included. Verify artifacts manually or with your normal CI/validation process.
+All runtime dependencies are provided via Nix.
+
+---
+
+## Usage with flakes (recommended)
+
+### Build
+
+```bash
+nix build github:Cairnstew/uup-converter-nix
+```
+
+Or explicitly:
+
+```bash
+nix build github:Cairnstew/uup-converter-nix#uup-converter
+```
+
+### Run
+
+```bash
+nix run github:Cairnstew/uup-converter-nix -- --help
+```
+
+(The `--` separates Nix arguments from program arguments.)
+
+---
+
+## Building locally (non-flake / legacy)
+
+From the repository root:
+
+```bash
+nix-build -A uup-converter
+```
+
+This creates a `./result` symlink. The binary will be available at:
+
+```bash
+./result/bin/uup-converter
+```
+
+---
+
+## Installing
+
+### Per-user (legacy)
+
+```bash
+nix-env -f . -iA uup-converter
+```
+
+### Declarative NixOS
+
+Add the package to your configuration:
+
+```nix
+environment.systemPackages = [
+  pkgs.uup-converter
+];
+```
+
+(Or use `home-manager`’s `home.packages`.)
+
+---
+
+## Basic usage
+
+Run the tool with `--help` to see the exact options supported by the packaged version:
+
+```bash
+uup-converter --help
+```
+
+Typical examples:
+
+```bash
+# Convert a UUP folder into an ISO
+uup-converter -i ./uup_download -o ./Windows.iso
+
+# Produce a WIM image (if supported by the upstream version)
+uup-converter -i ./uup_download -w ./install.wim
+```
+
+The input directory must already contain a valid UUP file layout produced by a UUP downloader.
+
+---
+
+## Notes
+
+* Available flags and behavior depend on the upstream `uup-converter` revision packaged here.
+* Always validate generated ISOs or WIMs using a VM or your deployment tooling before production use.
+* This package wraps the upstream scripts and tools; it does not modify their behavior beyond providing dependencies.
+
+---
+
+## Bugs and maintenance
+
+* **Packaging issues:** file issues in this repository
+* **Tool bugs or feature requests:** use the upstream project’s issue tracker
+
+---
+
+## Tests
+
+No automated package tests are included. Validation is expected to be performed by running the tool and testing the generated artifacts.
+
+---

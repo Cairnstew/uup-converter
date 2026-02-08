@@ -33,6 +33,12 @@ stdenv.mkDerivation rec {
   
   dontBuild = true;
   
+  postPatch = ''
+    # Replace 'which' with 'command -v' (bash builtin, more reliable)
+    sed -i 's/which \([^ ]*\) &>\/dev\/null 2>&1/command -v \1 \&>\\/dev\\/null/g' convert.sh
+    sed -i 's/which \([^ ]*\) &>\/dev\/null/command -v \1 \&>\\/dev\\/null/g' convert.sh
+  '';
+  
   installPhase = ''
     mkdir -p $out/bin
     install -m755 convert.sh $out/bin/uup-converter
